@@ -750,25 +750,64 @@ function renderMinimal() {
 }
 
 // --- PDF DOWNLOAD ---
-function downloadPDF() {
+async function downloadPDF() {
   const element = document.getElementById('cvPreview');
   
-  showToast("Génération du PDF en cours...");
+  if (!element) {
+    showToast("Erreur: Aperçu introuvable", "error");
+    return;
+  }
 
-  // Create a temporary container to hold a properly sized clone for PDF generation
+  showToast("Préparation du PDF...");
+
+  // Force une mise à jour de l'aperçu pour être sûr
+  updatePreview();
+
+  // Supprimer les anciens conteneurs d'exportation
+  const existingContainer = document.getElementById('pdf-export-container');
+  if (existingContainer) existingContainer.remove();
+
+  // Créer un conteneur temporaire
+  // On utilise des pixels (794px = 210mm à 96 DPI) pour éviter les erreurs de calcul des navigateurs mobiles
+  const A4_WIDTH_PX = 794;
+  const A4_HEIGHT_PX = 1123;
+
   const container = document.createElement('div');
   container.id = 'pdf-export-container';
-  container.style.position = 'absolute';
-  container.style.left = '-9999px';
-  container.style.top = '0';
-  container.style.width = '210mm';
+  
+  // Sur mobile, html2canvas a besoin que l'élément soit dans le flux visible
+  // donc on le met au top mais avec une opacité presque nulle et un z-index bas
+  Object.assign(container.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: `${A4_WIDTH_PX}px`,
+    height: `${A4_HEIGHT_PX}px`,
+    background: 'white',
+    zIndex: '-1',
+    opacity: '0.01',
+    pointerEvents: 'none',
+    overflow: 'hidden'
+  });
   
   const clone = element.cloneNode(true);
   clone.classList.add('pdf-rendering');
   
-  // Important: reset any inline styles that might interfere
-  clone.style.transform = 'none';
-  clone.style.margin = '0';
+  // Forcer des styles ultra-rigides en pixels sur le clone
+  Object.assign(clone.style, {
+    transform: 'none',
+    webkitTransform: 'none',
+    margin: '0',
+    padding: clone.classList.contains('template-creative') ? '0' : '15mm',
+    width: `${A4_WIDTH_PX}px`,
+    height: `${A4_HEIGHT_PX}px`,
+    minHeight: `${A4_HEIGHT_PX}px`,
+    maxHeight: `${A4_HEIGHT_PX}px`,
+    display: 'block',
+    opacity: '1',
+    visibility: 'visible',
+    position: 'relative'
+  });
   
   container.appendChild(clone);
   document.body.appendChild(container);
@@ -780,28 +819,53 @@ function downloadPDF() {
     html2canvas: { 
       scale: 2, 
       useCORS: true,
+      allowTaint: true,
       letterRendering: true,
-      scrollY: 0,
+      windowWidth: A4_WIDTH_PX,
+      width: A4_WIDTH_PX,
+      height: A4_HEIGHT_PX,
       scrollX: 0,
-      windowWidth: 1024, // Use a desktop-like window width for consistent layout
-      width: 794        // 210mm at 96 DPI
+      scrollY: 0,
+      x: 0,
+      y: 0,
+      logging: false
     },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    jsPDF: { unit: 'px', format: [A4_WIDTH_PX, A4_HEIGHT_PX], orientation: 'portrait' }
   };
   
-  // Small delay to ensure render is stable
-  setTimeout(() => {
-    html2pdf().set(opt).from(clone).save().then(() => {
-      document.body.removeChild(container);
-      showToast("PDF téléchargé avec succès !");
-    }).catch(err => {
-      console.error("PDF Error:", err);
-      if (document.body.contains(container)) {
-        document.body.removeChild(container);
-      }
-      showToast("Erreur lors de la génération du PDF", "error");
-    });
-  }, 100);
+  try {
+    const images = clone.getElementsByTagName('img');
+    await Promise.all(
+      Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(res => { img.onload = res; img.onerror = res; });
+      })
+    );
+    
+    if (document.fonts) await document.fonts.ready;
+
+    // Délai pour le rendu
+    setTimeout(() => {
+      // S'assurer qu'on capture bien DEPUIS le haut du clone
+      html2pdf().set(opt).from(clone).toPdf().get('pdf').then((pdf) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        if (totalPages > 1) {
+          for (let i = totalPages; i > 1; i--) pdf.deletePage(i);
+        }
+      }).save().then(() => {
+        if (document.body.contains(container)) container.remove();
+        showToast("PDF terminé avec succès !");
+      }).catch(err => {
+        console.error("PDF Export Error:", err);
+        if (document.body.contains(container)) container.remove();
+        showToast("Erreur d'exportation", "error");
+      });
+    }, 1200);
+  } catch (err) {
+    console.error("PDF Init Error:", err);
+    if (document.body.contains(container)) container.remove();
+    showToast("Erreur de préparation PDF", "error");
+  }
 }
 
 function resetCV(withUndo = false) {
