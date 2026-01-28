@@ -21,6 +21,7 @@ let CV_STATE = {
     email: "",
     phone: "",
     location: "",
+    age: "",
     website: "",
     summary: "",
   },
@@ -460,6 +461,7 @@ function renderExecutive() {
         ${p.email ? `<span>${p.email}</span>` : ""}
         ${p.phone ? `<span>${p.phone}</span>` : ""}
         ${p.location ? `<span>${p.location}</span>` : ""}
+        ${p.age ? `<span>${p.age} ans</span>` : ""}
         ${p.website ? `<span>${p.website.replace("https://", "")}</span>` : ""}
       </div>
     </header>
@@ -561,6 +563,7 @@ function renderCreative() {
           ${p.email ? `<div><strong style="display:block;opacity:0.8;">Email</strong>${p.email}</div>` : ""}
           ${p.phone ? `<div><strong style="display:block;opacity:0.8;">Tel</strong>${p.phone}</div>` : ""}
           ${p.location ? `<div><strong style="display:block;opacity:0.8;">Lieu</strong>${p.location}</div>` : ""}
+          ${p.age ? `<div><strong style="display:block;opacity:0.8;">Âge</strong>${p.age} ans</div>` : ""}
         </div>
       </div>
 
@@ -659,6 +662,7 @@ function renderMinimal() {
         ${p.email ? `<div>${p.email}</div>` : ""}
         ${p.phone ? `<div>${p.phone}</div>` : ""}
         ${p.location ? `<div>${p.location}</div>` : ""}
+        ${p.age ? `<div>${p.age} ans</div>` : ""}
       </div>
     </header>
 
@@ -892,6 +896,7 @@ function loadExampleData() {
       email: "abdoulaye.traore@email.com",
       phone: "+225 07 08 09 10 11",
       location: "Abidjan, Côte d'Ivoire",
+      age: "28",
       website: "https://github.com/atraore",
       summary: "Passionné par le développement web et les nouvelles technologies, j'ai plus de 5 ans d'expérience dans la création d'applications web performantes et scalables. Spécialisé en JavaScript, React et Node.js."
     },
