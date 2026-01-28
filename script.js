@@ -748,28 +748,35 @@ function renderMinimal() {
 // --- PDF DOWNLOAD ---
 function downloadPDF() {
   const element = document.getElementById('cvPreview');
+  
+  // Create a clone for PDF generation to avoid issues with CSS scaling/transformations
   const opt = {
     margin: 0,
     filename: `CV_${CV_STATE.personal.fullName || 'Export'}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
+    html2canvas: { 
+      scale: 2, 
+      useCORS: true,
+      letterRendering: true,
+      scrollY: 0,
+      scrollX: 0
+    },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
   
   showToast("Génération du PDF en cours...");
   
-  const watermark = document.createElement('div');
-  watermark.style.cssText = 'position:absolute;bottom:10mm;right:15mm;font-size:8pt;color:#ccc;font-family:sans-serif;pointer-events:none;';
-  element.appendChild(watermark);
-
+  // Temporarily reset transform for clean capture
+  const originalTransform = element.style.transform;
+  element.style.transform = 'none';
+  
   html2pdf().set(opt).from(element).save().then(() => {
-    element.removeChild(watermark);
+    element.style.transform = originalTransform;
     showToast("PDF téléchargé avec succès !");
-    
-    // Reset form automatically after 3 seconds
-    setTimeout(() => {
-      resetCV(true); // true means show undo button
-    }, 3000);
+  }).catch(err => {
+    console.error("PDF Error:", err);
+    element.style.transform = originalTransform;
+    showToast("Erreur lors de la génération du PDF", "error");
   });
 }
 
