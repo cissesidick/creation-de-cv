@@ -611,12 +611,19 @@ textarea {
     flex-direction: column;
   }
   .preview-panel {
-    height: 70vh;
-    padding: var(--sp-6) 0;
+    min-height: 80vh;
+    padding: 40px 10px;
+    background: #0f172a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
   }
   .cv-page {
     transform: scale(0.65);
-    margin-top: -150px;
+    transform-origin: top center;
+    margin-bottom: -350px; /* Counteract the space of the unscaled element */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   }
   .form-row {
     grid-template-columns: 1fr;
@@ -625,23 +632,23 @@ textarea {
 
 @media (max-width: 767px) {
   .cv-page {
-    transform: scale(0.42);
-    margin-top: -240px;
+    transform: scale(0.48);
+    margin-bottom: -550px;
   }
   .preview-panel {
-    height: 55vh;
-  }
-  .form-panel {
-    padding: var(--sp-4);
+    min-height: 70vh;
   }
   .template-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 480px) {
   .cv-page {
-    transform: scale(0.35);
-    margin-top: -280px;
+    transform: scale(0.38);
+    margin-bottom: -650px;
+  }
+  .template-grid {
+    grid-template-columns: 1fr;
   }
 }
