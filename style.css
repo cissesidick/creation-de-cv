@@ -396,18 +396,23 @@ textarea {
 
 /* Creative Template */
 .template-creative {
-  display: grid;
-  grid-template-columns: 32% 68%;
+  display: flex !important;
+  flex-direction: row !important;
   padding: 0 !important;
+  align-items: stretch !important;
 }
 
 .template-creative .cv-sidebar {
+  width: 33% !important;
+  min-width: 33% !important;
   background: var(--primary);
-  color: #111;
+  color: var(--primary-contrast) !important;
   padding: 10mm 8mm;
 }
 
 .template-creative .cv-main {
+  width: 67% !important;
+  min-width: 67% !important;
   padding: 10mm 10mm;
 }
 
@@ -603,6 +608,24 @@ textarea {
   }
 }
 
+/* Force PDF typography and rendering quality */
+.pdf-rendering {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
+}
+
+/* Optimization for single-page fit */
+.cv-section {
+  page-break-inside: avoid;
+}
+
+.cv-section p, .cv-section div {
+  orphans: 3;
+  widows: 3;
+}
+
 @media (max-width: 1023px) {
   .app-wrapper {
     height: auto;
@@ -653,29 +676,45 @@ textarea {
   }
 }
 
-/* Force PDF rendering styles */
+/* Force PDF rendering styles - LOCKS DIMENSIONS */
 .cv-page.pdf-rendering {
   transform: none !important;
   margin: 0 !important;
-  width: 210mm !important;
-  min-height: 297mm !important;
+  width: 794px !important;
+  height: 1123px !important;
+  min-height: 1123px !important;
+  max-height: 1123px !important;
+  overflow: hidden !important; 
   box-shadow: none !important;
   border: none !important;
-  position: relative !important;
-  left: 0 !important;
-  top: 0 !important;
-  background: white !important;
-  display: block !important;
-  visibility: visible !important;
-  page-break-after: always;
+  -webkit-font-smoothing: subpixel-antialiased !important;
+}
+
+/* Marges spécifiques pour le PDF selon le template */
+.cv-page.template-executive.pdf-rendering,
+.cv-page.template-minimal.pdf-rendering {
+  padding: 15mm !important;
+}
+
+.cv-page.template-creative.pdf-rendering {
+  padding: 0 !important;
 }
 
 /* Ensure backgrounds are captured in PDF */
-.pdf-rendering [style*="background"] {
+.pdf-rendering [style*="background"],
+.pdf-rendering .cv-sidebar,
+.pdf-rendering .cv-progress-fill,
+.pdf-rendering .cv-progress-container {
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
 }
 
 .pdf-rendering .cv-sidebar {
-  min-height: 297mm !important;
+  height: 1123px !important;
+  min-height: 1123px !important;
+}
+
+/* Forcer la couleur du texte lors de l'export pour éviter les effets de transparence mobile */
+.pdf-rendering * {
+  text-rendering: optimizeLegibility !important;
 }
