@@ -664,4 +664,18 @@ textarea {
   position: relative !important;
   left: 0 !important;
   top: 0 !important;
+  background: white !important;
+  display: block !important;
+  visibility: visible !important;
+  page-break-after: always;
+}
+
+/* Ensure backgrounds are captured in PDF */
+.pdf-rendering [style*="background"] {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.pdf-rendering .cv-sidebar {
+  min-height: 297mm !important;
 }
