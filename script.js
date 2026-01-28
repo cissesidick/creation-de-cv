@@ -749,7 +749,24 @@ function renderMinimal() {
 function downloadPDF() {
   const element = document.getElementById('cvPreview');
   
-  // Create a clone for PDF generation to avoid issues with CSS scaling/transformations
+  // Create a temporary container to hold a properly sized clone for PDF generation
+  // This is crucial for mobile devices where the preview is scaled down
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '-10000px'; // Move far off-screen
+  container.style.left = '0';
+  container.style.width = '210mm'; // Force exact A4 width
+  container.style.zIndex = '-1000';
+  
+  const clone = element.cloneNode(true);
+  clone.classList.add('pdf-rendering');
+  
+  // Ensure all images (if any) are loaded in the clone
+  // (In our case, the photo is already a base64 string, so it's immediate)
+  
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
   const opt = {
     margin: 0,
     filename: `CV_${CV_STATE.personal.fullName || 'Export'}.pdf`,
@@ -759,23 +776,23 @@ function downloadPDF() {
       useCORS: true,
       letterRendering: true,
       scrollY: 0,
-      scrollX: 0
+      scrollX: 0,
+      windowWidth: 794, // Approx 210mm at 96dpi
+      width: 794
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
   
   showToast("Génération du PDF en cours...");
   
-  // Temporarily reset transform for clean capture
-  const originalTransform = element.style.transform;
-  element.style.transform = 'none';
-  
-  html2pdf().set(opt).from(element).save().then(() => {
-    element.style.transform = originalTransform;
+  html2pdf().set(opt).from(clone).save().then(() => {
+    document.body.removeChild(container);
     showToast("PDF téléchargé avec succès !");
   }).catch(err => {
     console.error("PDF Error:", err);
-    element.style.transform = originalTransform;
+    if (document.body.contains(container)) {
+      document.body.removeChild(container);
+    }
     showToast("Erreur lors de la génération du PDF", "error");
   });
 }
