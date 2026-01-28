@@ -753,20 +753,22 @@ function renderMinimal() {
 function downloadPDF() {
   const element = document.getElementById('cvPreview');
   
+  showToast("Génération du PDF en cours...");
+
   // Create a temporary container to hold a properly sized clone for PDF generation
-  // This is crucial for mobile devices where the preview is scaled down
   const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '-10000px'; // Move far off-screen
-  container.style.left = '0';
-  container.style.width = '210mm'; // Force exact A4 width
-  container.style.zIndex = '-1000';
+  container.id = 'pdf-export-container';
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.style.top = '0';
+  container.style.width = '210mm';
   
   const clone = element.cloneNode(true);
   clone.classList.add('pdf-rendering');
   
-  // Ensure all images (if any) are loaded in the clone
-  // (In our case, the photo is already a base64 string, so it's immediate)
+  // Important: reset any inline styles that might interfere
+  clone.style.transform = 'none';
+  clone.style.margin = '0';
   
   container.appendChild(clone);
   document.body.appendChild(container);
@@ -774,31 +776,32 @@ function downloadPDF() {
   const opt = {
     margin: 0,
     filename: `CV_${CV_STATE.personal.fullName || 'Export'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
+    image: { type: 'jpeg', quality: 1.0 },
     html2canvas: { 
       scale: 2, 
       useCORS: true,
       letterRendering: true,
       scrollY: 0,
       scrollX: 0,
-      windowWidth: 794, // Approx 210mm at 96dpi
-      width: 794
+      windowWidth: 1024, // Use a desktop-like window width for consistent layout
+      width: 794        // 210mm at 96 DPI
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
   
-  showToast("Génération du PDF en cours...");
-  
-  html2pdf().set(opt).from(clone).save().then(() => {
-    document.body.removeChild(container);
-    showToast("PDF téléchargé avec succès !");
-  }).catch(err => {
-    console.error("PDF Error:", err);
-    if (document.body.contains(container)) {
+  // Small delay to ensure render is stable
+  setTimeout(() => {
+    html2pdf().set(opt).from(clone).save().then(() => {
       document.body.removeChild(container);
-    }
-    showToast("Erreur lors de la génération du PDF", "error");
-  });
+      showToast("PDF téléchargé avec succès !");
+    }).catch(err => {
+      console.error("PDF Error:", err);
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
+      showToast("Erreur lors de la génération du PDF", "error");
+    });
+  }, 100);
 }
 
 function resetCV(withUndo = false) {
