@@ -9,28 +9,23 @@
   <meta name="copyright" content="CISSE SIDICK">
   <meta name="designer" content="CISSE SIDICK">
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- External Styles -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- PDF Generation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
   <div class="app-wrapper">
-    <!-- FORM SIDE -->
     <aside class="panel form-panel" id="formPanel">
       <header>
         <h1 style="font-family: var(--font-accent); font-size: 1.5rem; color: var(--primary); margin-bottom: var(--sp-2)">CISSE Premium CV Builder</h1>
         <p style="color: var(--gray-500); font-size: 0.875rem; margin-bottom: var(--sp-8)">Créez un CV qui vous ressemble en quelques clics.</p>
       </header>
 
-      <!-- TEMPLATE & THEME -->
       <section>
         <h3 class="section-title">Design & Apparence</h3>
         
@@ -65,7 +60,6 @@
         </div>
       </section>
 
-      <!-- PHOTO -->
       <section>
         <h3 class="section-title">Photo de Profil</h3>
         <div class="photo-upload-zone" id="dropZone">
@@ -78,7 +72,6 @@
         </div>
       </section>
 
-      <!-- INFO PERSO -->
       <section>
         <h3 class="section-title">Informations Personnelles</h3>
         <div class="form-group">
@@ -119,7 +112,6 @@
         </div>
       </section>
 
-      <!-- EXPERIENCES -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
           <h3 class="section-title" style="margin-bottom: 0; border: none">Expériences</h3>
@@ -128,7 +120,6 @@
         <div id="experiencesContainer"></div>
       </section>
 
-      <!-- FORMATION -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
           <h3 class="section-title" style="margin-bottom: 0; border: none">Formations</h3>
@@ -137,7 +128,6 @@
         <div id="educationsContainer"></div>
       </section>
 
-      <!-- SKILLS -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
           <h3 class="section-title" style="margin-bottom: 0; border: none">Compétences</h3>
@@ -146,7 +136,6 @@
         <div id="skillsContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
       </section>
 
-      <!-- LANGUES -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
           <h3 class="section-title" style="margin-bottom: 0; border: none">Langues</h3>
@@ -155,7 +144,6 @@
         <div id="languagesContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
       </section>
 
-      <!-- LOISIRS -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
           <h3 class="section-title" style="margin-bottom: 0; border: none">Loisirs & Sports</h3>
@@ -164,7 +152,6 @@
         <div id="hobbiesContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
       </section>
 
-      <!-- ACTIONS -->
       <footer style="margin-top: var(--sp-12); display: flex; flex-direction: column; gap: var(--sp-4); padding-bottom: var(--sp-10)">
         <button class="btn btn-primary" style="width: 100%" onclick="downloadPDF()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -180,10 +167,8 @@
       </div>
     </aside>
 
-    <!-- PREVIEW SIDE -->
     <main class="preview-panel">
       <div id="cvPreview" class="cv-page template-executive">
-        <!-- Rendered by JS -->
       </div>
 
       <div class="ui-controls" style="position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px;">
@@ -194,7 +179,6 @@
 
   <div id="toast" class="toast">Info message</div>
 
-  <!-- External Script -->
   <script src="script.js"></script>
 </body>
 </html>
