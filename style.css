@@ -1,6 +1,3 @@
-/* 
- * 1. RESET & BASE 
- */
 *,
 *::before,
 *::after {
@@ -10,12 +7,10 @@
 }
 
 :root {
-  /* Colors - Default (Ocean) */
   --primary: #0f766e;
   --primary-dark: #0d9488;
   --primary-light: #ccfbf1;
 
-  /* Neutrals */
   --gray-50: #f8fafc;
   --gray-100: #f1f5f9;
   --gray-200: #e2e8f0;
@@ -27,13 +22,11 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
 
-  /* Semantic */
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
   --info: #3b82f6;
 
-  /* Spacing */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
@@ -44,24 +37,20 @@
   --sp-12: 48px;
   --sp-16: 64px;
 
-  /* Typography */
   --font-main: "Inter", -apple-system, sans-serif;
   --font-serif: "Playfair Display", serif;
   --font-accent: "Outfit", sans-serif;
 
-  /* Animations */
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 150ms var(--ease-out);
   --transition-normal: 250ms var(--ease-out);
   --transition-slow: 400ms var(--ease-out);
 
-  /* Shadow */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg:
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
-  /* UI Configuration */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
@@ -81,9 +70,6 @@ body {
   overflow-x: hidden;
 }
 
-/* 
- * 2. LAYOUT 
- */
 .app-wrapper {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -129,9 +115,6 @@ body {
   padding: var(--sp-10) var(--sp-4);
 }
 
-/* 
- * 3. COMPONENTS 
- */
 .section-title {
   font-family: var(--font-accent);
   font-size: 1.25rem;
@@ -246,7 +229,6 @@ textarea {
   font-size: 0.75rem;
 }
 
-/* Dynamic List Styling */
 .dynamic-item {
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
@@ -277,9 +259,6 @@ textarea {
   color: var(--gray-400);
 }
 
-/* 
- * 4. PHOTO UPLOAD 
- */
 .photo-upload-zone {
   border: 2px dashed var(--gray-300);
   border-radius: var(--radius-md);
@@ -323,9 +302,6 @@ textarea {
   text-transform: uppercase;
 }
 
-/* 
- * 5. PREVIEW CV STYLES 
- */
 .cv-page {
   width: 210mm;
   min-height: 297mm;
@@ -337,7 +313,6 @@ textarea {
   color: #333;
 }
 
-/* Executive Template */
 .template-executive .cv-header {
   text-align: center;
   margin-bottom: var(--sp-8);
@@ -368,7 +343,7 @@ textarea {
   flex-wrap: wrap;
   gap: var(--sp-4);
   font-size: 0.85rem;
-  color: #111; /* Changed from gray-600 to dark black */
+  color: #111;
 }
 
 .template-executive .cv-section {
@@ -394,7 +369,6 @@ textarea {
   gap: var(--sp-3);
 }
 
-/* Creative Template */
 .template-creative {
   display: flex !important;
   flex-direction: row !important;
@@ -423,7 +397,6 @@ textarea {
   margin-bottom: var(--sp-1);
 }
 
-/* Minimal Template */
 .template-minimal .cv-header {
   display: flex;
   justify-content: space-between;
@@ -431,9 +404,6 @@ textarea {
   margin-bottom: var(--sp-6);
 }
 
-/* 
- * 6. UTILITIES & THEMES 
- */
 .theme-switcher {
   display: flex;
   gap: var(--sp-2);
@@ -488,7 +458,6 @@ textarea {
   color: var(--gray-600);
 }
 
-/* Toast */
 .toast {
   position: fixed;
   top: 24px;
@@ -528,9 +497,6 @@ textarea {
   transform: scale(1.05);
 }
 
-/* 
- * 7. PRINT STYLES 
- */
 @media print {
   body {
     background: white;
@@ -558,7 +524,6 @@ textarea {
   }
 }
 
-/* Skill & Language Form Items */
 .skill-item-form, .language-item-form {
   display: flex;
   flex-direction: column;
@@ -578,7 +543,6 @@ textarea {
   align-items: center;
 }
 
-/* Progress Bar for Preview */
 .cv-progress-container {
   width: 100%;
   height: 6px;
@@ -595,7 +559,6 @@ textarea {
   transition: width 0.3s ease;
 }
 
-/* Responsive scaling for preview */
 @media (max-width: 1400px) {
   .cv-page {
     transform: scale(0.85);
@@ -608,7 +571,6 @@ textarea {
   }
 }
 
-/* Force PDF typography and rendering quality */
 .pdf-rendering {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -616,7 +578,6 @@ textarea {
   font-feature-settings: "kern" 1;
 }
 
-/* Optimization for single-page fit */
 .cv-section {
   page-break-inside: avoid;
 }
@@ -645,7 +606,7 @@ textarea {
   .cv-page {
     transform: scale(0.65);
     transform-origin: top center;
-    margin-bottom: -350px; /* Counteract the space of the unscaled element */
+    margin-bottom: -350px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   }
   .form-row {
@@ -676,7 +637,6 @@ textarea {
   }
 }
 
-/* Force PDF rendering styles - LOCKS DIMENSIONS */
 .cv-page.pdf-rendering {
   transform: none !important;
   margin: 0 !important;
@@ -690,7 +650,6 @@ textarea {
   -webkit-font-smoothing: subpixel-antialiased !important;
 }
 
-/* Marges spécifiques pour le PDF selon le template */
 .cv-page.template-executive.pdf-rendering,
 .cv-page.template-minimal.pdf-rendering {
   padding: 15mm !important;
@@ -700,7 +659,6 @@ textarea {
   padding: 0 !important;
 }
 
-/* Ensure backgrounds are captured in PDF */
 .pdf-rendering [style*="background"],
 .pdf-rendering .cv-sidebar,
 .pdf-rendering .cv-progress-fill,
@@ -714,7 +672,6 @@ textarea {
   min-height: 1123px !important;
 }
 
-/* Forcer la couleur du texte lors de l'export pour éviter les effets de transparence mobile */
 .pdf-rendering * {
   text-rendering: optimizeLegibility !important;
 }
