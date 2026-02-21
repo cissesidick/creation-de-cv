@@ -7,10 +7,12 @@
 }
 
 :root {
+
   --primary: #0f766e;
   --primary-dark: #0d9488;
   --primary-light: #ccfbf1;
 
+ 
   --gray-50: #f8fafc;
   --gray-100: #f1f5f9;
   --gray-200: #e2e8f0;
@@ -22,10 +24,12 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
 
+
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
   --info: #3b82f6;
+
 
   --sp-1: 4px;
   --sp-2: 8px;
@@ -37,20 +41,24 @@
   --sp-12: 48px;
   --sp-16: 64px;
 
+  /* Typography */
   --font-main: "Inter", -apple-system, sans-serif;
   --font-serif: "Playfair Display", serif;
   --font-accent: "Outfit", sans-serif;
 
+  /* Animations */
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 150ms var(--ease-out);
   --transition-normal: 250ms var(--ease-out);
   --transition-slow: 400ms var(--ease-out);
 
+  /* Shadow */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg:
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
+  /* UI Configuration */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
@@ -175,6 +183,10 @@ textarea {
   min-height: 120px;
 }
 
+textarea.textarea-sm {
+  min-height: 48px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -293,6 +305,7 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
 .initials-placeholder {
@@ -343,7 +356,7 @@ textarea {
   flex-wrap: wrap;
   gap: var(--sp-4);
   font-size: 0.85rem;
-  color: #111;
+  color: #111; /* Changed from gray-600 to dark black */
 }
 
 .template-executive .cv-section {
@@ -524,7 +537,8 @@ textarea {
   }
 }
 
-.skill-item-form, .language-item-form {
+.skill-item-form,
+.language-item-form {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -536,7 +550,8 @@ textarea {
   margin-bottom: var(--sp-2);
 }
 
-.skill-item-form .form-row, .language-item-form .form-row {
+.skill-item-form .form-row,
+.language-item-form .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--sp-2);
@@ -582,7 +597,8 @@ textarea {
   page-break-inside: avoid;
 }
 
-.cv-section p, .cv-section div {
+.cv-section p,
+.cv-section div {
   orphans: 3;
   widows: 3;
 }
@@ -606,8 +622,8 @@ textarea {
   .cv-page {
     transform: scale(0.65);
     transform-origin: top center;
-    margin-bottom: -350px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    margin-bottom: -350px; /* Counteract the space of the unscaled element */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   }
   .form-row {
     grid-template-columns: 1fr;
@@ -644,7 +660,7 @@ textarea {
   height: 1123px !important;
   min-height: 1123px !important;
   max-height: 1123px !important;
-  overflow: hidden !important; 
+  overflow: hidden !important;
   box-shadow: none !important;
   border: none !important;
   -webkit-font-smoothing: subpixel-antialiased !important;
