@@ -1,6 +1,5 @@
 "use strict";
 
-// --- CONFIG & CONSTANTS ---
 const STORAGE_KEY = "premium_cv_data";
 const THEMES = {
   ocean: "#0F766E",
@@ -37,13 +36,11 @@ let CV_STATE = {
 
 let LAST_STATE_BACKUP = null;
 
-// --- DOM REFERENCES ---
 const dropZone = document.getElementById("dropZone");
 const photoInput = document.getElementById("photoInput");
 const cvPreview = document.getElementById("cvPreview");
 const toast = document.getElementById("toast");
 
-// --- UTILITIES ---
 const debounce = (func, wait) => {
   let timeout;
   return (...args) => {
@@ -69,18 +66,15 @@ const showToast = (message, type = "info", action = null) => {
   toast.style.borderLeft = `4px solid ${type === "error" ? "var(--error)" : "var(--primary)"}`;
   toast.classList.add("show");
   
-  // Longer duration if there is an action button
   const duration = action ? 6000 : 3000;
   setTimeout(() => toast.classList.remove("show"), duration);
 };
 
-// --- INITIALIZATION ---
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     try {
       CV_STATE = JSON.parse(saved);
-      // Backwards compatibility for new fields
       if (!CV_STATE.languages) CV_STATE.languages = [];
       if (!CV_STATE.hobbies) CV_STATE.hobbies = [];
       syncFormWithState();
@@ -117,7 +111,6 @@ function syncFormWithState() {
   renderHobbiesUI();
 }
 
-// --- EVENT HANDLERS ---
 function setupEventListeners() {
   document.querySelectorAll('[data-state^="personal."]').forEach((input) => {
     input.addEventListener("input", (e) => {
@@ -165,7 +158,6 @@ function setupEventListeners() {
   });
 }
 
-// --- PHOTO LOGIC ---
 function handlePhotoSelect(e) {
   if (e.target.files.length) handlePhotoProcess(e.target.files[0]);
 }
@@ -232,7 +224,6 @@ function updateInitials() {
   }
 }
 
-// --- DYNAMIC SECTIONS LOGIC ---
 function addDynamicItem(type) {
   const item = type === "experiences"
       ? { id: Date.now(), company: "", role: "", dates: "", description: "" }
@@ -270,10 +261,10 @@ function renderDynamicListUI(type) {
     if (type === "experiences") {
       div.innerHTML = `
         <div class="form-row">
-          <input type="text" placeholder="Entreprise" value="${item.company}" oninput="handleDynamicInput('experiences', ${item.id}, 'company', this.value)">
-          <input type="text" placeholder="Dates (ex: 2020 - Présent)" value="${item.dates}" oninput="handleDynamicInput('experiences', ${item.id}, 'dates', this.value)">
+          <textarea placeholder="Entreprise" class="textarea-sm" oninput="handleDynamicInput('experiences', ${item.id}, 'company', this.value)">${item.company}</textarea>
+          <textarea placeholder="Dates (ex: 2020 - Présent)" class="textarea-sm" oninput="handleDynamicInput('experiences', ${item.id}, 'dates', this.value)">${item.dates}</textarea>
         </div>
-        <input type="text" placeholder="Poste" value="${item.role}" oninput="handleDynamicInput('experiences', ${item.id}, 'role', this.value)">
+        <textarea placeholder="Poste" class="textarea-sm" oninput="handleDynamicInput('experiences', ${item.id}, 'role', this.value)">${item.role}</textarea>
         <textarea placeholder="Description des missions..." oninput="handleDynamicInput('experiences', ${item.id}, 'description', this.value)">${item.description}</textarea>
         <div class="item-controls">
           <span class="drag-handle">⠿</span>
@@ -283,10 +274,11 @@ function renderDynamicListUI(type) {
     } else {
       div.innerHTML = `
         <div class="form-row">
-          <input type="text" placeholder="École / Université" value="${item.school}" oninput="handleDynamicInput('educations', ${item.id}, 'school', this.value)">
-          <input type="text" placeholder="Dates" value="${item.dates}" oninput="handleDynamicInput('educations', ${item.id}, 'dates', this.value)">
+          <textarea placeholder="École / Université" class="textarea-sm" oninput="handleDynamicInput('educations', ${item.id}, 'school', this.value)">${item.school}</textarea>
+          <textarea placeholder="Dates" class="textarea-sm" oninput="handleDynamicInput('educations', ${item.id}, 'dates', this.value)">${item.dates}</textarea>
         </div>
-        <input type="text" placeholder="Diplôme" value="${item.degree}" oninput="handleDynamicInput('educations', ${item.id}, 'degree', this.value)">
+        <textarea placeholder="Diplôme" class="textarea-sm" oninput="handleDynamicInput('educations', ${item.id}, 'degree', this.value)">${item.degree}</textarea>
+        <textarea placeholder="Description (optionnel)..." oninput="handleDynamicInput('educations', ${item.id}, 'description', this.value)">${item.description || ""}</textarea>
         <div class="item-controls">
           <span class="drag-handle">⠿</span>
           <button class="btn btn-ghost btn-sm" style="color: var(--error)" onclick="removeDynamicItem('educations', ${item.id})">Supprimer</button>
@@ -297,7 +289,6 @@ function renderDynamicListUI(type) {
   });
 }
 
-// --- SKILLS, LANGUAGES, HOBBIES LOGIC ---
 function addSkill() {
   const name = prompt("Nom de la compétence :");
   if (name) {
@@ -327,11 +318,9 @@ function renderSkillsUI() {
   container.innerHTML = "";
   
   CV_STATE.skills.forEach((skill, index) => {
-    // Check if skill is object (new format) or string (old format)
     const name = typeof skill === 'string' ? skill : skill.name;
     const percentage = typeof skill === 'string' ? 80 : (skill.percentage || 0);
     
-    // Auto-migrate old format if needed
     if (typeof skill === 'string') {
       CV_STATE.skills[index] = { name: name, percentage: percentage };
     }
@@ -381,7 +370,6 @@ function renderLanguagesUI() {
   container.innerHTML = "";
   
   CV_STATE.languages.forEach((lang, index) => {
-    // Handle old string format
     let name, level;
     if (typeof lang === 'string') {
       const parts = lang.split(" - ");
@@ -437,7 +425,6 @@ function renderHobbiesUI() {
   });
 }
 
-// --- PREVIEW RENDERING ---
 function updatePreview() {
   const template = CV_STATE.template;
   cvPreview.className = `cv-page template-${template}`;
@@ -454,10 +441,10 @@ function renderExecutive() {
   const p = CV_STATE.personal;
   return `
     <header class="cv-header">
-      ${CV_STATE.photo ? `<div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); margin: 0 auto 10px; overflow: hidden;"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover;"></div>` : ""}
-      <h1 class="cv-name" style="font-size: 1.8rem; margin-bottom: 2px;">${p.fullName || "Votre Nom"}</h1>
-      <p class="cv-title" style="font-size: 0.95rem; margin-bottom: 10px;">${p.jobTitle || "Votre Titre Professionnel"}</p>
-      <div class="cv-info-list" style="color: #000 !important; gap: 8px; font-size: 0.75rem;">
+      ${CV_STATE.photo ? `<div style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin: 0 auto 10px; overflow: hidden; display: block;"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>` : ""}
+      <h1 class="cv-name" style="font-size: 1.8rem; margin-bottom: 2px; white-space: pre-line;">${p.fullName || "Votre Nom"}</h1>
+      <p class="cv-title" style="font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line;">${p.jobTitle || "Votre Titre Professionnel"}</p>
+      <div class="cv-info-list" style="color: #000 !important; gap: 8px; font-size: 0.75rem; white-space: pre-line;">
         ${p.email ? `<span>${p.email}</span>` : ""}
         ${p.phone ? `<span>${p.phone}</span>` : ""}
         ${p.location ? `<span>${p.location}</span>` : ""}
@@ -468,17 +455,17 @@ function renderExecutive() {
 
     <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px;">
       <div>
-        ${p.summary ? `<section class="cv-section" style="margin-bottom: 12px;"><h2 class="cv-section-title" style="margin-bottom: 5px;">Profil</h2><p style="font-size: 0.8rem; color: #000; line-height: 1.2;">${p.summary}</p></section>` : ""}
+        ${p.summary ? `<section class="cv-section" style="margin-bottom: 12px;"><h2 class="cv-section-title" style="margin-bottom: 5px;">Profil</h2><p style="font-size: 0.8rem; color: #000; line-height: 1.2; white-space: pre-line;">${p.summary}</p></section>` : ""}
 
         <section class="cv-section" style="margin-bottom: 12px;">
           <h2 class="cv-section-title" style="margin-bottom: 8px;">Expériences</h2>
           ${CV_STATE.experiences.map((exp) => `
             <div style="margin-bottom: 10px;">
               <div style="display: flex; justify-content: space-between; font-weight: 700; color: #000; font-size: 0.85rem;">
-                <span>${exp.role || "Poste"}</span>
-                <span style="color: var(--primary)">${exp.dates || "Période"}</span>
+                <span style="white-space: pre-line;">${exp.role || "Poste"}</span>
+                <span style="color: var(--primary); white-space: pre-line;">${exp.dates || "Période"}</span>
               </div>
-              <div style="font-style: italic; color: #333; font-size: 0.8rem; margin-bottom: 1px;">${exp.company || "Entreprise"}</div>
+              <div style="font-style: italic; color: #333; font-size: 0.8rem; margin-bottom: 1px; white-space: pre-line;">${exp.company || "Entreprise"}</div>
               <p style="font-size: 0.75rem; color: #000; white-space: pre-line; line-height: 1.2;">${exp.description || ""}</p>
             </div>
           `).join("")}
@@ -489,10 +476,11 @@ function renderExecutive() {
           ${CV_STATE.educations.map((edu) => `
             <div style="margin-bottom: 8px;">
               <div style="display: flex; justify-content: space-between; font-weight: 700; color: #000; font-size: 0.85rem;">
-                <span>${edu.degree || "Diplôme"}</span>
-                <span>${edu.dates || ""}</span>
+                <span style="white-space: pre-line;">${edu.degree || "Diplôme"}</span>
+                <span style="white-space: pre-line;">${edu.dates || ""}</span>
               </div>
-              <div style="color: #333; font-size: 0.8rem;">${edu.school || "Établissement"}</div>
+              <div style="color: #333; font-size: 0.8rem; white-space: pre-line;">${edu.school || "Établissement"}</div>
+              ${edu.description ? `<p style="font-size: 0.75rem; color: #000; white-space: pre-line; line-height: 1.2; margin-top: 2px;">${edu.description}</p>` : ""}
             </div>
           `).join("")}
         </section>
@@ -555,11 +543,11 @@ function renderCreative() {
   const p = CV_STATE.personal;
   return `
     <div class="cv-sidebar" style="background: var(--primary); color: var(--primary-contrast) !important;">
-      ${CV_STATE.photo ? `<div style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; margin: 0 auto 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--primary-contrast);"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover;"></div>` : ""}
+      ${CV_STATE.photo ? `<div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 3px solid var(--primary-contrast); display: block;"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>` : ""}
       
       <div style="margin-bottom: 20px;">
         <h3 style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; border-bottom: 1px solid var(--primary-contrast); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: var(--primary-contrast);">Contact</h3>
-        <div style="font-size: 0.7rem; display: flex; flex-direction: column; gap: 6px; color: var(--primary-contrast);">
+        <div style="font-size: 0.7rem; display: flex; flex-direction: column; gap: 6px; color: var(--primary-contrast); white-space: pre-line;">
           ${p.email ? `<div><strong style="display:block;opacity:0.8;">Email</strong>${p.email}</div>` : ""}
           ${p.phone ? `<div><strong style="display:block;opacity:0.8;">Tel</strong>${p.phone}</div>` : ""}
           ${p.location ? `<div><strong style="display:block;opacity:0.8;">Lieu</strong>${p.location}</div>` : ""}
@@ -617,18 +605,18 @@ function renderCreative() {
     </div>
     <div class="cv-main" style="color: #000 !important;">
       <header style="margin-bottom: 25px;">
-        <h1 class="cv-name" style="color: var(--primary); margin-bottom: 2px; font-size: 1.6rem;">${p.fullName || "Votre Nom"}</h1>
-        <p style="font-size: 1.1rem; font-weight: 600; color: #000;">${p.jobTitle || "Votre Titre"}</p>
+        <h1 class="cv-name" style="color: var(--primary); margin-bottom: 2px; font-size: 1.6rem; white-space: pre-line;">${p.fullName || "Votre Nom"}</h1>
+        <p style="font-size: 1.1rem; font-weight: 600; color: #000; white-space: pre-line;">${p.jobTitle || "Votre Titre"}</p>
       </header>
 
-      ${p.summary ? `<section style="margin-bottom: 25px;"><h2 style="font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase;">Profil</h2><p style="font-size: 0.85rem; color: #000; line-height: 1.4;">${p.summary}</p></section>` : ""}
+      ${p.summary ? `<section style="margin-bottom: 25px;"><h2 style="font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase;">Profil</h2><p style="font-size: 0.85rem; color: #000; line-height: 1.4; white-space: pre-line;">${p.summary}</p></section>` : ""}
 
       <section style="margin-bottom: 25px;">
         <h2 style="font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase;">Expériences</h2>
         ${CV_STATE.experiences.map((exp) => `
           <div style="margin-bottom: 15px;">
-            <div style="font-weight: 700; font-size: 0.95rem; color: #000;">${exp.role}</div>
-            <div style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">${exp.company} • ${exp.dates}</div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: #000; white-space: pre-line;">${exp.role}</div>
+            <div style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; white-space: pre-line;">${exp.company} • ${exp.dates}</div>
             <p style="font-size: 0.8rem; color: #000; line-height: 1.4;">${exp.description}</p>
           </div>
         `).join("")}
@@ -638,8 +626,9 @@ function renderCreative() {
         <h2 style="font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase;">Formations</h2>
         ${CV_STATE.educations.map((edu) => `
           <div style="margin-bottom: 12px;">
-            <div style="font-weight: 700; font-size: 0.9rem; color: #000;">${edu.degree}</div>
-            <div style="font-size: 0.85rem; color: #333;">${edu.school} • ${edu.dates}</div>
+            <div style="font-weight: 700; font-size: 0.9rem; color: #000; white-space: pre-line;">${edu.degree}</div>
+            <div style="font-size: 0.85rem; color: #333; white-space: pre-line;">${edu.school} • ${edu.dates}</div>
+            ${edu.description ? `<p style="font-size: 0.8rem; color: #000; white-space: pre-line; line-height: 1.4; margin-top: 2px;">${edu.description}</p>` : ""}
           </div>
         `).join("")}
       </section>
@@ -652,13 +641,13 @@ function renderMinimal() {
   return `
     <header style="border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; color: #000;">
       <div style="display: flex; align-items: center; gap: 20px;">
-        ${CV_STATE.photo ? `<div style="width: 80px; height: 80px; border-radius: 4px; border: 2px solid #000; overflow: hidden;"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover;"></div>` : ""}
+        ${CV_STATE.photo ? `<div style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #000; overflow: hidden; display: block;"><img src="${CV_STATE.photo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>` : ""}
         <div>
-          <h1 style="font-family: var(--font-serif); font-size: 2.2rem; color: #000; margin: 0; font-weight: 700;">${p.fullName || "Nom"}</h1>
-          <p style="font-size: 1rem; color: #000; margin-top: 2px; font-weight: 500;">${p.jobTitle || "Titre"}</p>
+          <h1 style="font-family: var(--font-serif); font-size: 2.2rem; color: #000; margin: 0; font-weight: 700; white-space: pre-line;">${p.fullName || "Nom"}</h1>
+          <p style="font-size: 1rem; color: #000; margin-top: 2px; font-weight: 500; white-space: pre-line;">${p.jobTitle || "Titre"}</p>
         </div>
       </div>
-      <div style="text-align: right; font-size: 0.8rem; color: #000; font-weight: 500;">
+      <div style="text-align: right; font-size: 0.8rem; color: #000; font-weight: 500; white-space: pre-line;">
         ${p.email ? `<div>${p.email}</div>` : ""}
         ${p.phone ? `<div>${p.phone}</div>` : ""}
         ${p.location ? `<div>${p.location}</div>` : ""}
@@ -666,7 +655,7 @@ function renderMinimal() {
       </div>
     </header>
 
-    ${p.summary ? `<section style="margin-bottom: 25px; color: #000;"><h2 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #000; margin-bottom: 10px; font-weight: 700;">À propos</h2><p style="font-size: 0.85rem; color: #000; line-height: 1.5;">${p.summary}</p></section>` : ""}
+    ${p.summary ? `<section style="margin-bottom: 25px; color: #000;"><h2 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #000; margin-bottom: 10px; font-weight: 700;">À propos</h2><p style="font-size: 0.85rem; color: #000; line-height: 1.5; white-space: pre-line;">${p.summary}</p></section>` : ""}
 
     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; color: #000;">
       <div>
@@ -675,10 +664,10 @@ function renderMinimal() {
           ${CV_STATE.experiences.map((exp) => `
             <div style="margin-bottom: 20px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                <strong style="font-size: 1rem; color: #000;">${exp.role}</strong>
+                <strong style="font-size: 1rem; color: #000; white-space: pre-line;">${exp.role}</strong>
                 <span style="font-size: 0.8rem; color: #000; font-weight: 600;">${exp.dates}</span>
               </div>
-              <div style="font-size: 0.9rem; margin-bottom: 6px; color: #333; font-weight: 500;">${exp.company}</div>
+              <div style="font-size: 0.9rem; margin-bottom: 6px; color: #333; font-weight: 500; white-space: pre-line;">${exp.company}</div>
               <p style="font-size: 0.8rem; color: #000; border-left: 2px solid #000; padding-left: 12px; line-height: 1.4;">${exp.description}</p>
             </div>
           `).join("")}
@@ -688,9 +677,10 @@ function renderMinimal() {
           <h2 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #000; margin-bottom: 15px; font-weight: 700;">Formation</h2>
           ${CV_STATE.educations.map((edu) => `
             <div style="margin-bottom: 15px;">
-              <div style="font-weight: 700; font-size: 0.9rem; color: #000; margin-bottom: 1px;">${edu.degree}</div>
-              <div style="font-size: 0.85rem; color: #333; font-weight: 500;">${edu.school}</div>
+              <div style="font-weight: 700; font-size: 0.9rem; color: #000; margin-bottom: 1px; white-space: pre-line;">${edu.degree}</div>
+              <div style="font-size: 0.85rem; color: #333; font-weight: 500; white-space: pre-line;">${edu.school}</div>
               <div style="font-size: 0.8rem; color: #555; font-style: italic;">${edu.dates}</div>
+              ${edu.description ? `<p style="font-size: 0.8rem; color: #000; border-left: 2px solid #000; padding-left: 12px; line-height: 1.4; margin-top: 4px; white-space: pre-line;">${edu.description}</p>` : ""}
             </div>
           `).join("")}
         </section>
@@ -749,7 +739,6 @@ function renderMinimal() {
   `;
 }
 
-// --- PDF DOWNLOAD ---
 async function downloadPDF() {
   const element = document.getElementById('cvPreview');
   
@@ -760,23 +749,17 @@ async function downloadPDF() {
 
   showToast("Préparation du PDF...");
 
-  // Force une mise à jour de l'aperçu pour être sûr
   updatePreview();
 
-  // Supprimer les anciens conteneurs d'exportation
   const existingContainer = document.getElementById('pdf-export-container');
   if (existingContainer) existingContainer.remove();
 
-  // Créer un conteneur temporaire
-  // On utilise des pixels (794px = 210mm à 96 DPI) pour éviter les erreurs de calcul des navigateurs mobiles
   const A4_WIDTH_PX = 794;
   const A4_HEIGHT_PX = 1123;
 
   const container = document.createElement('div');
   container.id = 'pdf-export-container';
   
-  // Sur mobile, html2canvas a besoin que l'élément soit dans le flux visible
-  // donc on le met au top mais avec une opacité presque nulle et un z-index bas
   Object.assign(container.style, {
     position: 'fixed',
     top: '0',
@@ -793,7 +776,6 @@ async function downloadPDF() {
   const clone = element.cloneNode(true);
   clone.classList.add('pdf-rendering');
   
-  // Forcer des styles ultra-rigides en pixels sur le clone
   Object.assign(clone.style, {
     transform: 'none',
     webkitTransform: 'none',
@@ -844,9 +826,7 @@ async function downloadPDF() {
     
     if (document.fonts) await document.fonts.ready;
 
-    // Délai pour le rendu
     setTimeout(() => {
-      // S'assurer qu'on capture bien DEPUIS le haut du clone
       html2pdf().set(opt).from(clone).toPdf().get('pdf').then((pdf) => {
         const totalPages = pdf.internal.getNumberOfPages();
         if (totalPages > 1) {
@@ -869,7 +849,6 @@ async function downloadPDF() {
 }
 
 function resetCV(withUndo = false) {
-  // Save backup before resetting
   LAST_STATE_BACKUP = JSON.parse(JSON.stringify(CV_STATE));
 
   CV_STATE = {
@@ -888,11 +867,10 @@ function resetCV(withUndo = false) {
     skills: [],
     languages: [],
     hobbies: [],
-    template: CV_STATE.template, // Keep current template/theme
+    template: CV_STATE.template,
     theme: CV_STATE.theme,
   };
   
-  // Reset Photo UI to placeholder
   const photoPreview = document.getElementById("photoPreview");
   if (photoPreview) {
     photoPreview.innerHTML = `<span class="initials-placeholder" id="initialsPlaceholder">??</span>`;
@@ -923,8 +901,6 @@ function restoreLastState() {
   }
 }
 
-
-// --- DATA MANAGEMENT ---
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(CV_STATE));
 }
@@ -935,22 +911,18 @@ function applyTheme(themeKey) {
   document.documentElement.style.setProperty("--primary-dark", color === "#FFFFFF" ? "#F1F5F9" : color + "CC");
   document.documentElement.style.setProperty("--primary-light", color === "#FFFFFF" ? "#F8FAF8" : color + "1A");
   
-  // Calculate contrast color (white or black) based on primary color
   const contrastColor = getContrastColor(color);
   document.documentElement.style.setProperty("--primary-contrast", contrastColor);
 }
 
 function getContrastColor(hexcolor) {
-  // If white, return dark gray/black
   if (hexcolor.toUpperCase() === "#FFFFFF") return "#1e293b";
   
-  // Remove # if present
   hexcolor = hexcolor.replace("#", "");
   const r = parseInt(hexcolor.substr(0, 2), 16);
   const g = parseInt(hexcolor.substr(2, 2), 16);
   const b = parseInt(hexcolor.substr(4, 2), 16);
   
-  // Calculate brightness (Luma)
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
   return yiq >= 128 ? "#1e293b" : "#ffffff";
 }
