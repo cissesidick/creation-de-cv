@@ -158,6 +158,7 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="url"],
+input[type="number"],
 textarea,
 select {
   width: 100%;
@@ -266,9 +267,21 @@ textarea.textarea-sm {
   margin-top: var(--sp-2);
 }
 
-.drag-handle {
-  cursor: grab;
-  color: var(--gray-400);
+.reorder-controls {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.reorder-btn {
+  padding: 2px 8px !important;
+  font-size: 1rem !important;
+  line-height: 1;
+  color: var(--gray-500);
+}
+
+.reorder-btn:hover {
+  color: var(--primary);
+  background: var(--gray-100);
 }
 
 .photo-upload-zone {
@@ -305,6 +318,7 @@ textarea.textarea-sm {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   border-radius: 50%;
 }
 
@@ -359,6 +373,12 @@ textarea.textarea-sm {
   color: #111; /* Changed from gray-600 to dark black */
 }
 
+.template-executive .cv-info-list span:not(:last-child)::after {
+  content: "•";
+  margin-left: 8px;
+  color: var(--gray-300);
+}
+
 .template-executive .cv-section {
   margin-bottom: var(--sp-4);
 }
@@ -395,6 +415,8 @@ textarea.textarea-sm {
   background: var(--primary);
   color: var(--primary-contrast) !important;
   padding: 10mm 8mm;
+  display: flex;
+  flex-direction: column;
 }
 
 .template-creative .cv-main {
@@ -440,7 +462,7 @@ textarea.textarea-sm {
 
 .template-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--sp-4);
   margin-bottom: var(--sp-8);
 }
@@ -510,31 +532,221 @@ textarea.textarea-sm {
   transform: scale(1.05);
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.privacy-note {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  margin-bottom: var(--sp-6);
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  margin-top: var(--sp-1);
+  line-height: 1.4;
+}
+
+.field-hint:empty {
+  display: none;
+}
+
+.page-warning {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #b45309;
+  margin-top: var(--sp-2);
+}
+
+.country-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.country-opt,
+.order-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 10px 12px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  background: white;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.country-opt:hover,
+.order-opt:hover {
+  border-color: var(--gray-300);
+}
+
+.country-opt.active,
+.order-opt.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--gray-900);
+}
+
+/* Drapeaux en CSS : les emojis drapeaux ne s'affichent pas sous Windows */
+.flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--gray-200);
+  flex-shrink: 0;
+}
+
+.flag-fr {
+  background: linear-gradient(90deg, #0055a4 33.3%, #fff 33.3% 66.6%, #ef4135 66.6%);
+}
+
+.flag-ci {
+  background: linear-gradient(90deg, #f77f00 33.3%, #fff 33.3% 66.6%, #009e60 66.6%);
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
 @media print {
+  /* !important : les règles responsive plus bas s'appliquent aussi à l'impression */
+  html,
   body {
-    background: white;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
   }
   .app-wrapper {
-    display: block;
-    padding: 0;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    overflow: visible !important;
   }
   .form-panel,
   .ui-controls,
-  .theme-switcher,
-  .template-grid,
-  .btn-primary {
+  .toast,
+  #pdf-export-container {
     display: none !important;
   }
   .preview-panel {
-    padding: 0;
-    background: white;
-    overflow: visible;
+    display: block !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    background: white !important;
+    overflow: visible !important;
   }
   .cv-page {
-    box-shadow: none;
-    margin: 0;
+    width: 210mm;
+    min-height: 297mm;
+    box-shadow: none !important;
+    margin: 0 !important;
     transform: none !important;
   }
+  .cv-page,
+  .cv-page * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+.completion-meter {
+  margin-bottom: var(--sp-8);
+}
+
+.completion-meter-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: var(--sp-2);
+}
+
+.completion-meter-head span:last-child {
+  color: var(--primary);
+}
+
+.req {
+  color: var(--error);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: var(--sp-1);
+  min-height: 1em;
+}
+
+input.invalid,
+textarea.invalid {
+  border-color: var(--error) !important;
+  background: #fef2f2;
+}
+
+input.invalid:focus,
+textarea.invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px 12px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  transition: var(--transition-fast);
+}
+
+.chip:hover {
+  border-color: var(--gray-300);
+}
+
+.chip-remove {
+  cursor: pointer;
+  color: var(--gray-400);
+  font-weight: 700;
+  line-height: 1;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+
+.chip-remove:hover {
+  color: var(--error);
+}
+
+.chip-input {
+  width: auto !important;
+  flex: 1;
+  min-width: 130px;
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+  border-radius: 50px !important;
+  border-style: dashed !important;
 }
 
 .skill-item-form,
@@ -667,7 +879,8 @@ textarea.textarea-sm {
 }
 
 .cv-page.template-executive.pdf-rendering,
-.cv-page.template-minimal.pdf-rendering {
+.cv-page.template-minimal.pdf-rendering,
+.cv-page.template-classique.pdf-rendering {
   padding: 15mm !important;
 }
 

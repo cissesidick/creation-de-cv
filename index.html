@@ -9,6 +9,9 @@
   <meta name="copyright" content="CISSE SIDICK">
   <meta name="designer" content="CISSE SIDICK">
   
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#0F766E">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,9 +25,34 @@
   <div class="app-wrapper">
     <aside class="panel form-panel" id="formPanel">
       <header>
-        <h1 style="font-family: var(--font-accent); font-size: 1.5rem; color: var(--primary); margin-bottom: var(--sp-2)">CISSE Premium CV Builder</h1>
-        <p style="color: var(--gray-500); font-size: 0.875rem; margin-bottom: var(--sp-8)">Créez un CV qui vous ressemble en quelques clics.</p>
+        <h1 style="font-family: var(--font-accent); font-size: 1.5rem; color: var(--primary); margin-bottom: var(--sp-2)">CISSE CV</h1>
+        <p style="color: var(--gray-500); font-size: 0.875rem; margin-bottom: var(--sp-2)">Créez un CV qui vous ressemble en quelques clics.</p>
+        <p class="privacy-note">🔒 Vos données restent sur votre appareil : rien n'est envoyé sur un serveur.</p>
+
+        <div class="completion-meter">
+          <div class="completion-meter-head">
+            <span>Complétion du CV</span>
+            <span id="completionValue">0%</span>
+          </div>
+          <div class="cv-progress-container">
+            <div class="cv-progress-fill" id="completionFill" style="width: 0%"></div>
+          </div>
+          <p class="page-warning" id="pageWarning" hidden>⚠ Votre CV dépasse une page A4. Pensez à le raccourcir.</p>
+        </div>
       </header>
+
+      <section>
+        <h3 class="section-title">Pays de candidature</h3>
+        <div class="country-switch" role="radiogroup" aria-label="Pays de candidature">
+          <button type="button" class="country-opt" data-country="fr" role="radio" aria-checked="false">
+            <span class="flag flag-fr" aria-hidden="true"></span> France
+          </button>
+          <button type="button" class="country-opt" data-country="ci" role="radio" aria-checked="false">
+            <span class="flag flag-ci" aria-hidden="true"></span> Côte d'Ivoire
+          </button>
+        </div>
+        <p class="field-hint" data-hint-for="country" style="margin-bottom: var(--sp-8)"></p>
+      </section>
 
       <section>
         <h3 class="section-title">Design & Apparence</h3>
@@ -45,6 +73,17 @@
             <div style="height: 60px; background: var(--gray-100); border-radius: 4px; margin-bottom: 8px; border: 1px solid var(--gray-200)"></div>
             <span>Minimal</span>
           </div>
+          <div class="template-card" data-template="classique" title="Une colonne, noir et blanc : le format français le plus répandu">
+            <div style="height: 60px; background: white; border-radius: 4px; margin-bottom: 8px; border: 1px solid var(--gray-200); padding: 8px; display: flex; flex-direction: column; gap: 5px;">
+              <div style="height: 5px; width: 55%; background: var(--gray-400);"></div>
+              <div style="height: 1px; background: var(--gray-300);"></div>
+              <div style="height: 3px; width: 90%; background: var(--gray-200);"></div>
+              <div style="height: 3px; width: 75%; background: var(--gray-200);"></div>
+              <div style="height: 1px; background: var(--gray-300);"></div>
+              <div style="height: 3px; width: 85%; background: var(--gray-200);"></div>
+            </div>
+            <span>Classique</span>
+          </div>
         </div>
 
         <label>Palette de Couleurs</label>
@@ -57,7 +96,16 @@
           <div class="theme-opt" data-theme="corporate" style="background: #475569;"></div>
           <div class="theme-opt" data-theme="tech" style="background: #0891B2;"></div>
           <div class="theme-opt" data-theme="elegant" style="background: #A21CAF;"></div>
+          <div class="theme-opt" data-theme="navy" style="background: #1E3A5F;" title="Bleu marine (sobre)"></div>
+          <div class="theme-opt" data-theme="black" style="background: #1F2937;" title="Noir (sobre)"></div>
         </div>
+
+        <label>Ordre des sections</label>
+        <div class="country-switch" role="radiogroup" aria-label="Ordre des sections">
+          <button type="button" class="order-opt" data-order="experience" role="radio" aria-checked="true">Expériences d'abord</button>
+          <button type="button" class="order-opt" data-order="education" role="radio" aria-checked="false">Formation d'abord</button>
+        </div>
+        <p class="field-hint" style="margin-bottom: var(--sp-8)">« Formation d'abord » est conseillé pour un étudiant ou un jeune diplômé.</p>
       </section>
 
       <section>
@@ -69,46 +117,71 @@
           </div>
           <p style="font-size: 0.85rem; font-weight: 600; color: var(--primary)">Cliquez ou déposez votre photo</p>
           <p style="font-size: 0.75rem; color: var(--gray-400)">JPG, PNG ou WebP (Max 5MB)</p>
+          <p class="field-hint" data-hint-for="photo"></p>
         </div>
       </section>
 
       <section>
         <h3 class="section-title">Informations Personnelles</h3>
         <div class="form-group">
-          <label for="fullName">Nom Complet</label>
-          <textarea id="fullName" placeholder="Ex: Jean Valjean" data-state="personal.fullName" class="textarea-sm"></textarea>
+          <label for="fullName">Nom Complet <span class="req">*</span></label>
+          <input type="text" id="fullName" placeholder="Ex: Jean Valjean" data-state="personal.fullName" autocomplete="name" required>
+          <span class="field-error" data-error-for="fullName"></span>
         </div>
         <div class="form-group">
-          <label for="jobTitle">Titre du Poste</label>
-          <textarea id="jobTitle" placeholder="Ex: Développeur Fullstack Senior" data-state="personal.jobTitle" class="textarea-sm"></textarea>
+          <label for="jobTitle">Titre du Poste <span class="req">*</span></label>
+          <input type="text" id="jobTitle" placeholder="Ex: Développeur Fullstack Senior" data-state="personal.jobTitle" autocomplete="organization-title" required>
+          <span class="field-error" data-error-for="jobTitle"></span>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="email">Email</label>
-            <textarea id="email" placeholder="jean.valjean@email.com" data-state="personal.email" class="textarea-sm"></textarea>
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="jean.valjean@email.com" data-state="personal.email" data-validate="email" autocomplete="email" inputmode="email" required>
+            <span class="field-error" data-error-for="email"></span>
           </div>
           <div class="form-group">
-            <label for="phone">Téléphone</label>
-            <textarea id="phone" placeholder="+225 00 00 00 00 00" data-state="personal.phone" class="textarea-sm"></textarea>
+            <label for="phone">Téléphone <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="+225 00 00 00 00 00" data-state="personal.phone" data-validate="phone" autocomplete="tel" inputmode="tel" required>
+            <span class="field-error" data-error-for="phone"></span>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="location">Localisation</label>
-            <textarea id="location" placeholder="Abidjan, Côte d'Ivoire" data-state="personal.location" class="textarea-sm"></textarea>
+            <label for="location">Localisation <span class="req">*</span></label>
+            <input type="text" id="location" placeholder="Paris (75011)" data-state="personal.location" autocomplete="address-level2" required>
+            <span class="field-error" data-error-for="location"></span>
           </div>
+          <div class="form-group">
+            <label for="license">Permis / Mobilité</label>
+            <input type="text" id="license" placeholder="Ex: Permis B, véhiculé" data-state="personal.license">
+          </div>
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label for="age">Âge</label>
-            <textarea id="age" placeholder="Ex: 25" data-state="personal.age" class="textarea-sm"></textarea>
+            <input type="number" id="age" min="16" max="99" placeholder="Ex: 25" data-state="personal.age" inputmode="numeric">
+            <span class="field-hint" data-hint-for="age"></span>
           </div>
+          <div class="form-group">
+            <label for="nationality">Nationalité <span class="req" data-req-for="nationality">*</span></label>
+            <input type="text" id="nationality" placeholder="Ex: Ivoirienne" data-state="personal.nationality" autocomplete="country-name">
+            <span class="field-hint" data-hint-for="nationality"></span>
+            <span class="field-error" data-error-for="nationality"></span>
+          </div>
+        </div>
+        <div class="form-group" data-country-only="ci">
+          <label for="maritalStatus">Situation familiale</label>
+          <input type="text" id="maritalStatus" placeholder="Ex: Célibataire, Marié(e)…" data-state="personal.maritalStatus">
         </div>
         <div class="form-group">
           <label for="website">Portfolio / LinkedIn</label>
-          <textarea id="website" placeholder="https://linkedin.com/in/..." data-state="personal.website" class="textarea-sm"></textarea>
+          <input type="url" id="website" placeholder="https://linkedin.com/in/..." data-state="personal.website" data-validate="url" inputmode="url">
+          <span class="field-error" data-error-for="website"></span>
         </div>
         <div class="form-group">
-          <label for="summary">À Propos / Objectif</label>
-          <textarea id="summary" placeholder="Brève présentation de votre parcours et de vos ambitions..." data-state="personal.summary"></textarea>
+          <label for="summary">À Propos / Objectif <span class="req">*</span></label>
+          <textarea id="summary" placeholder="Brève présentation de votre parcours et de vos ambitions..." data-state="personal.summary" required></textarea>
+          <span class="field-error" data-error-for="summary"></span>
         </div>
       </section>
 
@@ -133,6 +206,7 @@
           <h3 class="section-title" style="margin-bottom: 0; border: none">Compétences</h3>
           <button class="btn btn-outline btn-sm" onclick="addSkill()">+ Ajouter</button>
         </div>
+        <p class="field-hint" data-hint-for="skills" style="margin-top: calc(-1 * var(--sp-2)); margin-bottom: var(--sp-3);"></p>
         <div id="skillsContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
       </section>
 
@@ -146,7 +220,7 @@
 
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4)">
-          <h3 class="section-title" style="margin-bottom: 0; border: none">Loisirs & Sports</h3>
+          <h3 class="section-title" style="margin-bottom: 0; border: none">Loisirs & Centres d'intérêt</h3>
           <button class="btn btn-outline btn-sm" onclick="addHobby()">+ Ajouter</button>
         </div>
         <div id="hobbiesContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
@@ -157,8 +231,17 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           Télécharger PDF
         </button>
-        <div style="display: flex; gap: var(--sp-3);">
+        <button class="btn btn-outline" style="width: 100%" onclick="printPDF()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Imprimer le PDF
+        </button>
+        <p class="field-hint" style="margin-top: calc(-1 * var(--sp-2)); text-align: center;">
+          Pour une candidature en ligne, préférez « Imprimer le PDF » puis « Enregistrer au format PDF » : le texte restera lisible par les logiciels de recrutement.
+        </p>
+        <div style="display: flex; gap: var(--sp-3); flex-wrap: wrap;">
           <button class="btn btn-outline" style="flex: 1" onclick="exportData()">Exporter JSON</button>
+          <button class="btn btn-outline" style="flex: 1" onclick="importData()">Importer JSON</button>
+          <input type="file" id="importInput" accept="application/json,.json" hidden>
           <button class="btn btn-outline" style="flex: 1; color: var(--error); border-color: var(--error)" onclick="resetCV(true)">Tout effacer</button>
         </div>
       </footer>
